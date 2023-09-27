@@ -12,6 +12,7 @@ public class arr {
         {
             a = 45; // changes the original value reaasign original reference varibale to a new one
             int c = 99;
+            System.out.println(c);
         }
 
         System.out.println(a);
