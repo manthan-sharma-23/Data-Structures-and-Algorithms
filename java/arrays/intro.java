@@ -6,7 +6,7 @@ public class intro {
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        int[] rolls = { 1, 2, 3, 4, 5 }; // Store 5 roll numbers
+        // int[] rolls = { 1, 2, 3, 4, 5 }; // Store 5 roll numbers
 
         int n = sc.nextInt();
         int[] rollnums = new int[n];
