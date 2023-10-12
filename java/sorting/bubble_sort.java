@@ -2,13 +2,13 @@ package sorting;
 
 import java.util.Arrays;
 
-public class bubble {
+public class bubble_sort {
     public static void main(String[] args) {
         int arr[] = { -1,9,-3 };
-        System.out.println(Arrays.toString(bubble_sort(arr)));
+        System.out.println(Arrays.toString(bubble_sort_(arr)));
     }
 
-    static int[] bubble_sort(int arr[]) {
+    static int[] bubble_sort_(int arr[]) {
         boolean swapped = false;
         int n = arr.length;
         if (n <= 1)
