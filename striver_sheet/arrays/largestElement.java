@@ -1,10 +1,10 @@
 package striver_sheet.arrays;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class largestElement {
     public static void main(String[] args) {
-        int arr[] = { 6, 3, 2, 12, 12, 12 };
+        int arr[] = { -4, -9, -1 };
         int largest = secondLargestElmt_(arr);
         System.out.println(largest);
 
@@ -42,18 +42,59 @@ public class largestElement {
 
     }
 
+    static boolean checkIfArrayIsSorted(int nums[]) {
+        int prev = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] < prev) {
+                return false;
+            }
+            prev = nums[i - 1];
+        }
+
+        return true;
+
+    }
+
     static int secondLargestElmt_(int arr[]) {
+
+        // BRUTE FORCE APPROACH
         // approach i thought of--> sort the array and n-2 index. with some edge cases .
-        insertion_sort_(arr);
-        System.out.println(Arrays.toString(arr));
-        int num = arr[arr.length - 1];
-        for (int k = arr.length - 2; k >= 0; k--) {
-            if (num != arr[k]) {
-                num = arr[k];
-                break;
+        // gets time complexity of NlogN +N
+
+        // insertion_sort_(arr);
+        // System.out.println(Arrays.toString(arr));
+        // int num = arr[arr.length - 1];
+        // for (int k = arr.length - 2; k >= 0; k--) {
+        // if (num != arr[k]) {
+        // num = arr[k];
+        // return num;
+        // }
+        // }
+
+        // BETTER APPROACH
+        // total time complexity for two passes --> O(2N)
+        // int num = Integer.MIN_VALUE;
+        // int largest = largestElement_(arr); // First find the largest O(n)
+        // for (int i = 0; i < arr.length; i++) { // Then find the second largest O(n)
+        // if (arr[i] > num && arr[i] != largest) {
+        // num = arr[i];
+        // }
+        // }
+        // return num;
+
+        // MOST OPTIMAL APPROACH
+        // O(N) approach
+        int num = Integer.MIN_VALUE;
+        int largest = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] > largest) {
+                num = largest;
+                largest = arr[i];
+            } else if (arr[i] > num && arr[i] < largest) {
+                num = arr[i];
             }
         }
-        return num;
 
+        return num;
     }
 }
