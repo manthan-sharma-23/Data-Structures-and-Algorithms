@@ -41,7 +41,6 @@ public class largestElement {
         }
 
     }
-
     static boolean checkIfArrayIsSorted(int nums[]) {
         int prev = nums[0];
         for (int i = 1; i < nums.length; i++) {
@@ -94,7 +93,6 @@ public class largestElement {
                 num = arr[i];
             }
         }
-
         return num;
     }
 }
