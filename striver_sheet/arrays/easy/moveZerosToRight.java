@@ -1,4 +1,4 @@
-package striver_sheet.arrays;
+package striver_sheet.arrays.easy;
 
 import java.util.*;
 
@@ -38,6 +38,7 @@ public class moveZerosToRight {
                 nums[i] = 0;
                 nums[i - snowBallSize] = t;
             }
+            System.out.println(Arrays.toString(nums));
         }
     }
 }
