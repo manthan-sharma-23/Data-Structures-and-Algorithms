@@ -5,30 +5,25 @@ import java.util.*;
 public class rotateArrayKth {
     public static void main(String[] args) {
         int[] nums = { 1, 2, 3, 4, 5 };
-        System.out.println(Arrays.toString(nums));
-        RotateByKth(nums, 2);
-
-        System.out.println(Arrays.toString(nums));
+        rotate(nums, 2);
 
     }
 
-    static void RotateRight(int[] nums) {
-        System.out.println(Arrays.toString(nums));
-        int temp = nums[nums.length - 1];
-        int elmt = nums[0];
-        for (int i = 0; i < nums.length - 1; i++) {
-            elmt = nums[i + 1];
-            nums[i + 1] = nums[i];
-        }
-        nums[0] = temp;
-
+    static void rotate(int[] nums, int k) {
+        k %= nums.length;
+        int n = nums.length;
+        reverseNum(nums, 0, n - 1);
+        reverseNum(nums, 0, k - 1);
+        reverseNum(nums, k, n - 1);
     }
 
-    static void RotateByKth(int[] nums, int k) {
-        k = k % nums.length;
-        while (k > 0) {
-            RotateRight(nums);
-            k--;
+    static void reverseNum(int[] nums, int start, int end) {
+        while (start < end) {
+            int temp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = temp;
+            start++;
+            end--;
         }
     }
 }
