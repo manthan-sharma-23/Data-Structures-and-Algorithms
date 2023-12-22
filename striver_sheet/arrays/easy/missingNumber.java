@@ -4,13 +4,13 @@ import java.util.Arrays;
 
 public class missingNumber {
     public static void main(String[] args) {
-        int[] a = { 1, 0, 3 };
-        int number = missingNumber(a);
+        int[] a = { 0, 2, 3, 4, 1, 0 };
+        int number = missingNumberOptimalXOR(a);
 
         System.out.println(number);
     }
 
-    static int missingNumber(int[] nums) {
+    static int missingNumberBruteForce(int[] nums) {
         int n = nums.length;
         int miss = -1;
         int[] hash = new int[n + 1];
@@ -30,6 +30,18 @@ public class missingNumber {
         }
 
         return miss;
+    }
+
+    static int missingNumberOptimalXOR(int nums[]) {
+        int n = nums.length;
+        int xor1 = 0;
+        int xor2 = 0;
+        for (int i = 0; i < n-1; i++) {
+            xor1 ^= (i + 1);
+            xor2 ^= nums[i];
+        }
+        
+        return xor1 ^ xor2;
     }
 
 }
