@@ -1,5 +1,7 @@
 package striver_sheet.arrays.medium;
 
+// More's Voting Algorithm
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
