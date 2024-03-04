@@ -2,18 +2,19 @@ import sys
 
 
 def kadanes(nums: list[int]) -> int:
-    maxI = -sys.maxsize - 1
+    max_i = float("-inf")
     sum = 0
 
-    for i in nums:
+    for i in range(len(nums)):
         sum += nums[i]
-        if sum > maxI:
-            maxI = sum
+
+        if sum > max_i:
+            max_i = sum
 
         if sum < 0:
             sum = 0
 
-        return maxI
+    return max_i
 
 
 result = kadanes([2, 3, 4, 5, -5, 7, -5])
