@@ -5,3 +5,6 @@ bin
 .vscode
 out
 *.iml
+
+
+*.h

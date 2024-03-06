@@ -4,7 +4,8 @@ import java.util.*;
 
 public class kadane {
     public static void main(String[] args) {
-
+        int[] nums = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
+        KadaneAlgoPrint(nums);
     }
 
     static int maxSubArraySumBetter(int[] nums) {
@@ -65,10 +66,12 @@ public class kadane {
             }
         }
 
-        //print
-        for (int i =start; i <=end; i++) {
-            
+        // print
+        for (int i = start; i <=end; i++) {
+            System.out.print(nums[i] + " ");
         }
+
+        
     }
 
 }
