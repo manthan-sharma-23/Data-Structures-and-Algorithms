@@ -1,6 +1,3 @@
-import sys
-
-
 def kadanes(nums: list[int]) -> int:
     max_i = float("-inf")
     sum = 0
@@ -16,6 +13,5 @@ def kadanes(nums: list[int]) -> int:
 
     return max_i
 
-
-result = kadanes([2, 3, 4, 5, -5, 7, -5])
+result = kadanes([2, -5, 4, 5, -5, 2, -5])
 print(result)
