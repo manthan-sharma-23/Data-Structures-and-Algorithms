@@ -13,11 +13,9 @@ int binarySearch(int array[], int x, int low, int high)
         }
 
         if (array[mid] < x)
-        {
-            low = mid + 1;
-        }
-        else
-            high = mid - 1;
+            return binarySearch(array, x, mid + 1, high);
+
+        return binarySearch(array, x, low, mid - 1);
     }
 
     return -1;
