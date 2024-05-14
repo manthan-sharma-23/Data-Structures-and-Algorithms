@@ -18,7 +18,7 @@ int lowerBoundBruteForce(vector<int> arr, int x)
 
 int lowerBoundOptimal(vector<int> v, int x)
 {
-    int n = v.size();
+    int n = sizeof(v);
     int low = 0, high = n - 1;
     int result = high;
 
