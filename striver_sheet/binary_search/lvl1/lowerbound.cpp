@@ -43,13 +43,13 @@ int lowerBoundOptimal(vector<int> v, int x)
 
 int main(void)
 {
-    vector<int> v = {1, 2, 3, 4, 6, 7};
+    vector<int> v = {1, 2, 3, 4, 8, 8, 8, 8, 10, 12, 14};
 
-    int x = 5;
+    int x = 8;
 
     int index = lowerBoundOptimal(v, x);
 
-    cout << v[index] << endl;
+    cout << index << endl;
 
     return 0;
 }
