@@ -9,6 +9,5 @@ out
 
 *.h
 
-*.*
-*!.cpp
-*!.java
+
+cache
