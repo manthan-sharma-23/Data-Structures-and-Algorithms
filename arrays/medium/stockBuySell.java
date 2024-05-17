@@ -1,4 +1,4 @@
-package striver_sheet.arrays.medium;
+package arrays.medium;
 
 public class stockBuySell {
     public static void main(String[] args) {

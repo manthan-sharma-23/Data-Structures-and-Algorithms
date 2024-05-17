@@ -1,4 +1,4 @@
-package striver_sheet.arrays.medium;
+package arrays.medium;
 
 // More's Voting Algorithm
 

@@ -1,6 +1,6 @@
 // Order wise permutations of an array
 
-package striver_sheet.recursion.base;
+package recursion.base;
 
 import java.util.ArrayList;
 import java.util.List;

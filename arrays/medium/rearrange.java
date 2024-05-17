@@ -1,4 +1,4 @@
-package striver_sheet.arrays.medium;
+package arrays.medium;
 
 /*
  * You are given a 0-indexed integer array nums of even length consisting of an equal number of positive and negative integers.

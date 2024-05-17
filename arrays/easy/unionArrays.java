@@ -1,4 +1,4 @@
-package striver_sheet.arrays.easy;
+package arrays.easy;
 
 import java.util.Arrays;
 
