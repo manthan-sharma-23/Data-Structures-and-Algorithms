@@ -1,55 +1,34 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-int lowerBoundBruteForce(vector<int> arr, int x)
+int lowerBound(vector<int> arr, int n, int x)
 {
-    int n = sizeof(arr) / sizeof(arr[0]) - 1;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] >= x)
-        {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-int lowerBoundOptimal(vector<int> v, int x)
-{
-    int n = sizeof(v);
     int low = 0, high = n - 1;
-    int result = high;
+    int ans = n;
 
     while (low <= high)
     {
-        int mid = low + (high - low) / 2;
-
-        if (v[mid] >= x)
+        int mid = (low + high) / 2;
+        // maybe an answer
+        if (arr[mid] >= x)
         {
-            result = mid;
+            ans = mid;
+            // look for smaller index on the left
             high = mid - 1;
         }
-
         else
         {
-            low = mid + 1;
+            low = mid + 1; // look on the right
         }
     }
-
-    return result;
+    return ans;
 }
 
-int main(void)
+int main()
 {
-    vector<int> v = {1, 2, 3, 4, 8, 8, 8, 8, 10, 12, 14};
-
-    int x = 8;
-
-    int index = lowerBoundOptimal(v, x);
-
-    cout << index << endl;
-
+    vector<int> arr = {3, 5, 8, 15, 19};
+    int n = 5, x = 9;
+    int ind = lowerBound(arr, n, x);
+    cout << "The lower bound is the index: " << ind << "\n";
     return 0;
 }
