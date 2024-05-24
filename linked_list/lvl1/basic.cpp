@@ -38,6 +38,47 @@ Node *convertArr2LL(vector<int> arr)
     return head;
 }
 
+int lengthOfLL(Node *head)
+{
+    int cnt = 0;
+    while (head)
+    {
+        cnt++;
+        head = head->next;
+    }
+
+    return cnt;
+}
+
+bool searchAnElementInLL(Node *head, int x)
+{
+    Node *temp = head;
+
+    while (temp)
+    {
+        if (temp->data == x)
+        {
+            cout << "Found " << endl;
+            return true;
+        }
+        temp = temp->next;
+    }
+    cout << "Not Found" << endl;
+    return false;
+}
+
+void printLL(Node *head)
+{
+    Node *temp = head;
+
+    while (temp)
+    {
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+};
+
 int main()
 {
 
@@ -49,15 +90,25 @@ int main()
 
     Node *head = convertArr2LL(arr);
 
-    Node *next1 = head->next;
-    Node *next2 = next1->next;
-    Node *next3 = next2->next;
-    Node *next4 = next3->next;
+    cout << head << endl;
 
-    cout << head->data << endl;
-    cout << next1->data << endl;
-    cout << next2->data << endl;
-    cout << next3->data << endl;
-    cout << next4->data << endl;
-    cout << next4->next << endl;
+    // Traverse a linked list
+    Node *temp = head;
+    while (temp)
+    {
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+
+    // Length of LL
+    int lengthLL = lengthOfLL(head);
+    cout << endl
+         << lengthLL << endl;
+
+    cout << head << endl;
+
+    // Search in ll
+    searchAnElementInLL(head, 57);
+
+    cout << endl;
 }
