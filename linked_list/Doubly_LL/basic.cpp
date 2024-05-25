@@ -79,6 +79,60 @@ Node *insert_at_end_DLL(Node *head, int data_)
     return head;
 };
 
+// Delete Indexed Node from DLL
+Node *delete_indexed_node_DLL(Node *head, int index_)
+{
+    Node *temp = head;
+    int cnt = 0;
+
+    if (head->next == nullptr && head->prev == nullptr)
+    {
+        if (index_ == 0)
+        {
+            head = nullptr;
+            return head;
+        }
+        else
+        {
+            return head;
+        }
+    }
+
+    while (temp)
+    {
+        if (cnt == index_)
+        {
+            // head
+            if (temp->prev == nullptr)
+            {
+                temp->next->prev = nullptr;
+                head = temp->next;
+                return head;
+            }
+
+            // tail
+            if (temp->next == nullptr)
+            {
+                temp->prev->next = nullptr;
+                return head;
+            }
+
+            // regular
+            Node *prev = temp->prev;
+            Node *next = temp->next;
+
+            prev->next = next;
+            next->prev = prev;
+
+            return head;
+        }
+        temp = temp->next;
+        cnt++;
+    }
+
+    return head;
+};
+
 int main()
 {
     vector<int> v = {1, 2, 3, 4, 5, 6, 7};
@@ -86,11 +140,14 @@ int main()
     print_DLL(head);
 
     insert_at_end_DLL(head, 8);
-    print_DLL(head);
+    // print_DLL(head);
     insert_at_end_DLL(head, 9);
-    print_DLL(head);
+    // print_DLL(head);
     insert_at_end_DLL(head, 10);
     print_DLL(head);
 
+    // Delete an index from DLL
+    Node *head_ = delete_indexed_node_DLL(head, 10 - 1);
+    print_DLL(head_);
     return 0;
 }
