@@ -133,6 +133,31 @@ Node *delete_indexed_node_DLL(Node *head, int index_)
     return head;
 };
 
+// optimal approach for reversing a DLL
+Node *reverse_DLL(Node *head)
+{
+    Node *temp = nullptr;
+    Node *current = head;
+
+    // Swap next and prev for all nodes
+    while (current != nullptr)
+    {
+        temp = current->prev;
+        current->prev = current->next;
+        current->next = temp;
+        current = current->prev;
+    }
+
+    // Before changing head, check for the cases like empty
+    // list and list with only one node
+    if (temp != nullptr)
+    {
+        head = temp->prev;
+    }
+
+    return head;
+}
+
 int main()
 {
     vector<int> v = {1, 2, 3, 4, 5, 6, 7};
@@ -146,8 +171,13 @@ int main()
     insert_at_end_DLL(head, 10);
     print_DLL(head);
 
-    // Delete an index from DLL
-    Node *head_ = delete_indexed_node_DLL(head, 10 - 1);
-    print_DLL(head_);
+    // // Delete an index from DLL
+    // Node *head_ = delete_indexed_node_DLL(head, 10 - 1);
+    // print_DLL(head_);
+
+    // reverse a dll
+    Node *rev = reverse_DLL(head);
+    print_DLL(rev);
+
     return 0;
 }
