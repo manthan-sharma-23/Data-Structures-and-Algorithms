@@ -21,9 +21,7 @@ public:
         data = data1;
         next = next1;
     }
-};
-
-Node *createLLfromArr(vector<int> v)
+}*createLLfromArr(vector<int> v)
 {
     Node *head = new Node(v[0]);
     Node *move = head;
