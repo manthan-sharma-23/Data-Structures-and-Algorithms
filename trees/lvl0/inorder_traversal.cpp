@@ -17,16 +17,16 @@ public:
     }
 };
 
-void inorder_traversal(Node *root)
+int inorder_traversal(Node *root)
 {
     if (root == nullptr)
     {
-        return;
+        return 0;
     }
 
-    inorder_traversal(root->left);  // Traverse the left subtree
-    cout << root->data << " ";      // Visit the root node
-    inorder_traversal(root->right); // Traverse the right subtree
+    int a = inorder_traversal(root->left);  // Traverse the left subtree
+    int b = inorder_traversal(root->right); // Traverse the right subtree
+    return 1 + a + b;                       // Visit the root node
 }
 
 void postorder_traversal(Node *root)
@@ -57,8 +57,8 @@ int main()
     root->left->right = new Node(5);
 
     cout << "In-order traversal: ";
-    inorder_traversal(root);
-    cout << endl;
+    int left = inorder_traversal(root);
+    cout << left << endl;
 
     // Clean up the memory (optional for this simple example)
     delete root->left->right;
