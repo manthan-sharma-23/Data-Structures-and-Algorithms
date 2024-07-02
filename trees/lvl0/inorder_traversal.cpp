@@ -29,6 +29,17 @@ int inorder_traversal(Node *root)
     return 1 + a + b;                       // Visit the root node
 }
 
+int inorder_traversal_height(Node *root)
+{
+    if (root == nullptr)
+    {
+        return 0;
+    }
+    int a = inorder_traversal_height(root->left);  // Traverse the left subtree
+    int b = inorder_traversal_height(root->right); // Traverse the right subtree
+    return max(a, b) + 1;                          // Visit the root node
+}
+
 void postorder_traversal(Node *root)
 {
     if (root == nullptr)
@@ -56,16 +67,7 @@ int main()
     root->left->left = new Node(4);
     root->left->right = new Node(5);
 
-    cout << "In-order traversal: ";
-    int left = inorder_traversal(root);
-    cout << left << endl;
-
-    // Clean up the memory (optional for this simple example)
-    delete root->left->right;
-    delete root->left->left;
-    delete root->right;
-    delete root->left;
-    delete root;
+    cout << inorder_traversal_height(root) << endl;
 
     return 0;
 }
