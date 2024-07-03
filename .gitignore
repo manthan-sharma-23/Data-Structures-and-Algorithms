@@ -8,6 +8,8 @@ out
 
 build
 
+a.out
+
 *.h
 
 
