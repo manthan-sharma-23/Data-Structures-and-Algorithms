@@ -13,3 +13,4 @@ public:
         left = right = nullptr;
     }
 };
+
