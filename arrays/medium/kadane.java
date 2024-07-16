@@ -71,7 +71,7 @@ public class kadane {
             System.out.print(nums[i] + " ");
         }
 
-        
+
     }
 
 }
