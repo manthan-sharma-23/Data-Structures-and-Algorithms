@@ -13,7 +13,7 @@ public:
 
     for (int i = 0; i < V; i++) {
       for (auto it : adj[V]) {
-        indegree[it] += 1;
+        indegree[it]++;
       }
     }
 
@@ -29,7 +29,7 @@ public:
       topo.push_back(el);
 
       for (auto it : adj[el]) {
-        indegree[it] -= 1;
+        indegree[it]--;
         if (indegree[it] == 0) {
           Q.push(it);
         }
