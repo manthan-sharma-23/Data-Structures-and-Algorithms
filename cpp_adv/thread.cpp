@@ -1,61 +1,58 @@
-#include <iostream>
 #include <thread>
-#include <vector>
-#include <mutex>
-#include <condition_variable>
+#include <bits/stdc++.h>
+#include <iostream>
+#include <chrono>
+#include <algorithm>
 
-class Latch
+using namespace std;
+using namespace std::chrono;
+
+typedef unsigned long long ull;
+
+ull oddSum = 0;
+ull evenSum = 0;
+
+auto findEven = [](ull start, ull end)
 {
-public:
-    explicit Latch(int count) : count(count) {}
-
-    // Decrements the latch counter
-    void count_down()
+    for (int i = start; i <= end; i++)
     {
-        std::unique_lock<std::mutex> lock(mtx);
-        if (--count == 0)
+        if (i & 1 == 0)
         {
-            cv.notify_all(); // Notify all threads if count reaches zero
+            evenSum += i;
         }
     }
+};
 
-    // Waits until the latch count reaches zero
-    void wait()
+auto findOdd = [](ull start, ull end)
+{
+    for (int i = start; i <= end; i++)
     {
-        std::unique_lock<std::mutex> lock(mtx);
-        cv.wait(lock, [this]()
-                { return count == 0; });
+        if (i & 1 == 1)
+        {
+            oddSum += i;
+        }
     }
-
-private:
-    int count;
-    std::mutex mtx;
-    std::condition_variable cv;
 };
 
 int main()
 {
-    const int numThreads = 5;
-    Latch latch(numThreads); // Custom latch with a count equal to the number of threads
+    ull start = 0, end = 100000000000000;
 
-    auto worker = [&](int id)
-    {
-        std::cout << "Thread " << id << " is ready.\n";
-        latch.count_down(); // Decrement the latch count
-        latch.wait();       // Wait until the latch count reaches zero
-        std::cout << "Thread " << id << " is proceeding.\n";
-    };
+    auto now = std::chrono::high_resolution_clock::now();
 
-    std::vector<std::thread> threads;
-    for (int i = 0; i < numThreads; ++i)
-    {
+    std::thread t1(findEven, start, end);
 
-        threads.emplace_back(worker, i + 1);
-    }
+    t1.join();
 
-    for (auto &t : threads)
-    {
-        t.join();
-    }
-    return 0;
+    std::thread t2(findOdd, start, end);
+    t2.join();
+
+    if (t1.joinable())
+        t1.detach();
+
+    auto stop = high_resolution_clock::now();
+
+    auto duration = duration_cast<microseconds>(stop - now);
+
+    cout << "Duraiton in sec:: " << duration.count() << endl;
 }
