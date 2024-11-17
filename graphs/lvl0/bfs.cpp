@@ -1,30 +1,51 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <queue>
+#include <set>
+#include <vector>
 
-using namespace std;
-vector<int> bfsOfGraph(int V, vector<int> adj[]) {
-  // Code here
-  int vis[V];
-  for (auto it : vis) {
-    it = 0;
-  }
+std::vector<int> bfs_on_graph(std::vector<int> adj[]) {
+  std::vector<int> result;
+  std::set<int> visited_set;
+  std::queue<int> q;
 
-  vis[0] = 1;
-
-  queue<int> q;
   q.push(0);
 
-  vector<int> bfs;
-
   while (!q.empty()) {
-    int node = q.front();
+    auto node = q.front();
     q.pop();
 
-    for (auto it : adj[node]) {
-      if (!vis[it]) {
-        vis[it] = 1;
-        q.push(it);
+    if (visited_set.find(node) == visited_set.end()) {
+      result.push_back(node);
+      visited_set.insert(node);
+    }
+
+    for (auto n : adj[node]) {
+      if (visited_set.find(n) == visited_set.end()) {
+        q.push(n);
       }
     }
   }
-  return bfs;
+
+  return result;
+}
+
+int main() {
+  // Adjacency List Representation
+  std::vector<int> adj[5];
+  adj[0] = {1, 4};
+  adj[1] = {3, 2};
+  adj[2] = {};
+  adj[3] = {4};
+  adj[4] = {};
+
+  // Perform DFS
+  std::vector<int> res = bfs_on_graph(adj);
+
+  // Print DFS Traversal
+  for (auto i : res) {
+    std::cout << i << " ";
+  }
+  std::cout << std::endl;
+
+  return 0;
 }
