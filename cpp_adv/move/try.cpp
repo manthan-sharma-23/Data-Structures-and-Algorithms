@@ -4,25 +4,29 @@
 #include <iostream>
 
 using namespace std;
-class String {
+class String
+{
 public:
   String() = default;
 
-  String(const char *string) {
+  String(const char *string)
+  {
     std::cout << "Resource created !" << std::endl;
     len = std::strlen(string) + 1;
     str = new char[len];
     std::strcpy(str, string);
   }
 
-  String(const String &other) {
+  String(const String &other)
+  {
     len = other.len + 1;
     str = new char[len];
     memcpy(str, other.str, len);
     std::cout << "Resource copied !" << std::endl;
   }
 
-  String(String &&other) noexcept {
+  String(String &&other) noexcept
+  {
     std::cout << "Resource moved !" << std::endl;
     len = other.len + 1;
     str = other.str;
@@ -31,10 +35,12 @@ public:
     other.str = nullptr;
   }
 
-  String &operator=(String &&other) noexcept {
+  String &operator=(String &&other) noexcept
+  {
     printf("Operator Moved !\n");
 
-    if (this != &other) {
+    if (this != &other)
+    {
       delete str;
       len = other.len + 1;
       str = other.str;
@@ -45,7 +51,8 @@ public:
     return *this;
   }
 
-  ~String() {
+  ~String()
+  {
     delete[] str;
     std::cout << "Resource deleted !" << std::endl;
   }
@@ -56,7 +63,8 @@ public:
   int len;
 };
 
-class Entity {
+class Entity
+{
 public:
   Entity(const String &name) : m_data(name) {}
   Entity(String &&name) : m_data(std::move(name)) {}
@@ -69,7 +77,8 @@ private:
 
 void add(int &n) { n++; }
 
-int main() {
+int main()
+{
   String string = "Hello";
   String dest;
 
