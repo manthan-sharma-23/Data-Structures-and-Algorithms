@@ -1,41 +1,37 @@
 #include <bits/stdc++.h>
+#include <queue>
 #include <vector>
 
 using namespace std;
 
-class Kahns_algo_topo_sort_DAG {
+vector<int> kahns_topo_sort(int V, vector<int> adj[]) {
+  vector<int> topo;
+  vector<int> indegree(V, 0);
 
-public:
-  vector<int> topoSort(int V, vector<int> adj[]) {
-    vector<int> topo;
-    vector<int> indegree(V, 0);
-    queue<int> Q;
-
-    for (int i = 0; i < V; i++) {
-      for (auto it : adj[V]) {
-        indegree[it]++;
-      }
+  for (int i = 0; i < V; i++) {
+    for (auto it : adj[i]) {
+      indegree[it]++;
     }
+  }
 
-    for (int i = 0; i < V; i++) {
-      if (indegree[i] == 0) {
-        Q.push(i);
-      }
-    }
+  queue<int> q;
+  for (int i = 0; i < V; i++) {
+    if (indegree[i] == 0)
+      q.push(i);
+  }
 
-    while (!Q.empty()) {
-      auto el = Q.front();
-      Q.pop();
-      topo.push_back(el);
+  while (!q.empty()) {
+    auto node = q.front();
+    q.pop();
 
-      for (auto it : adj[el]) {
-        indegree[it]--;
-        if (indegree[it] == 0) {
-          Q.push(it);
-        }
+    topo.push_back(node);
+
+    for (auto it : adj[node]) {
+      indegree[it]--;
+      if (indegree[it] == 0) {
+        q.push(it);
       }
     }
 
     return topo;
   }
-}
