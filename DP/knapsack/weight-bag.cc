@@ -23,7 +23,6 @@ class MemoizedSolution {
   }
 
   int knapSack(int capacity, vector<int> &val, vector<int> &weights) {
-    // Initialize memo table with dimensions [capacity + 1][val.size() + 1]
     vector<vector<int>> memo(capacity + 1, vector<int>(val.size() + 1, -1));
 
     return maxProfit(memo, weights, val, capacity, val.size());
@@ -47,4 +46,4 @@ class TopDownSolution {
     }
     return dp[n][capacity];
   }
-}
+};
