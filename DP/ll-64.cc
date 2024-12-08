@@ -2,7 +2,7 @@
 
 using namespace std;
 
-class Solution {
+class TopDownSolution {
 public:
   int dfs(vector<vector<int>> &grid, int row, int col, int m, int n,
           vector<vector<int>> &memo) {
