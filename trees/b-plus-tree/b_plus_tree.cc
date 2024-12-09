@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <cstdio>
 #include <iterator>
@@ -19,6 +20,8 @@ public:
   bool isLeaf() { return type == PageType::LEAF; }
 
   bool isOverflow() { return size > max_size; }
+
+  bool isUnderFlow() { return size < std::floor((max_size + 1) / 2); }
 };
 
 class InternalNode : public BaseNode {
@@ -34,7 +37,7 @@ public:
 class LeafNode : public BaseNode {
 public:
   std::vector<int> keys;
-  std::vector<char *> values;
+  std::vector<std::shared_ptr<char>> values;
   std::shared_ptr<LeafNode> next;
 
   virtual ~LeafNode() {};
@@ -131,7 +134,7 @@ private:
     auto internal = std::dynamic_pointer_cast<InternalNode>(current);
     for (size_t i = 0; i < internal->children.size(); i++) {
       if (internal->children[i] == target)
-        return current;
+        return std::dynamic_pointer_cast<BaseNode>(current);
     }
 
     for (size_t i = 0; i < internal->children.size(); i++) {
@@ -141,8 +144,161 @@ private:
         return parent;
       }
     }
-
     return nullptr;
+  }
+
+  void handleLeafUnderFlow(std::shared_ptr<LeafNode> leaf) {
+    auto parent = findParent(root_, leaf);
+    if (!parent) {
+      return;
+    }
+
+    auto internal = std::dynamic_pointer_cast<InternalNode>(parent);
+    int idx = std::distance(
+        internal->children.begin(),
+        std::find(internal->children.begin(), internal->children.end(), leaf));
+
+    auto leftSibling =
+        idx > 0
+            ? std::dynamic_pointer_cast<LeafNode>(internal->children[idx - 1])
+            : nullptr;
+
+    auto rightSibling =
+        idx < internal->children.size() - 1
+            ? std::dynamic_pointer_cast<LeafNode>(internal->children[idx + 1])
+            : nullptr;
+
+    if (leftSibling && !leftSibling->isUnderFlow()) {
+      borrowFromLeft(leaf, leftSibling, internal, idx);
+      return;
+    }
+
+    if (rightSibling && !rightSibling->isUnderFlow()) {
+      borrowFromRight(leaf, rightSibling, internal, idx);
+      return;
+    }
+
+    if (leftSibling) {
+      mergeLeaves(leftSibling, leaf, internal, idx - 1);
+    } else if (rightSibling) {
+      mergeLeaves(leaf, rightSibling, internal, idx);
+    }
+  }
+
+  void borrowFromLeft(std::shared_ptr<LeafNode> leaf,
+                      std::shared_ptr<LeafNode> leftSibling,
+                      std::shared_ptr<InternalNode> parent, int idx) {
+    leaf->keys.insert(leaf->keys.begin(), leftSibling->keys.back());
+    leaf->values.insert(leaf->values.begin(), leftSibling->values.back());
+    leftSibling->keys.pop_back();
+    leftSibling->values.pop_back();
+    parent->keys[idx] = leaf->keys[0];
+  }
+
+  void borrowFromRight(std::shared_ptr<LeafNode> leaf,
+                       std::shared_ptr<LeafNode> rightSibling,
+                       std::shared_ptr<InternalNode> parent, int idx) {
+    leaf->keys.push_back(rightSibling->keys[0]);
+    leaf->values.push_back(rightSibling->values[0]);
+    rightSibling->keys.erase(rightSibling->keys.begin());
+    rightSibling->values.erase(rightSibling->values.begin());
+    parent->keys[idx + 1] = rightSibling->keys[0];
+  }
+
+  void borrowFromLeft(std::shared_ptr<InternalNode> leaf,
+                      std::shared_ptr<InternalNode> leftSibling,
+                      std::shared_ptr<InternalNode> parent, int idx) {
+    leaf->keys.insert(leaf->keys.begin(), leftSibling->keys.back());
+    leaf->children.insert(leaf->children.begin(), leftSibling->children.back());
+    leftSibling->keys.pop_back();
+    leftSibling->children.pop_back();
+    parent->keys[idx] = leaf->keys[0];
+  }
+
+  void borrowFromRight(std::shared_ptr<InternalNode> leaf,
+                       std::shared_ptr<InternalNode> rightSibling,
+                       std::shared_ptr<InternalNode> parent, int idx) {
+    leaf->keys.push_back(rightSibling->keys[0]);
+    leaf->children.push_back(rightSibling->children[0]);
+    rightSibling->keys.erase(rightSibling->keys.begin());
+    rightSibling->children.erase(rightSibling->children.begin());
+    parent->keys[idx + 1] = rightSibling->keys[0];
+  }
+
+  void mergeLeaves(std::shared_ptr<LeafNode> left,
+                   std::shared_ptr<LeafNode> right,
+                   std::shared_ptr<InternalNode> parent, int idx) {
+    left->values.insert(left->values.end(), right->values.begin(),
+                        right->values.end());
+    left->keys.insert(left->keys.end(), right->keys.begin(), right->keys.end());
+    left->next = right->next;
+
+    parent->keys.erase(parent->keys.begin() + idx);
+    parent->children.erase(parent->children.begin() + idx + 1);
+
+    if (parent->isUnderFlow()) {
+      handleInternalUnderFlow(parent);
+    }
+  }
+
+  void handleInternalUnderFlow(std::shared_ptr<InternalNode> internal) {
+    auto parent =
+        std::dynamic_pointer_cast<InternalNode>(findParent(root_, internal));
+    if (!parent) {
+      return;
+    }
+
+    int idx = std::distance(
+        parent->children.begin(),
+        std::find(parent->children.begin(), parent->children.end(), internal));
+
+    // Check if we can borrow from left sibling
+    auto leftSibling =
+        (idx > 0)
+            ? std::dynamic_pointer_cast<InternalNode>(parent->children[idx - 1])
+            : nullptr;
+    if (leftSibling &&
+        leftSibling->keys.size() > std::ceil(internal->max_size / 2.0)) {
+      borrowFromLeft(internal, leftSibling, parent, idx);
+      return;
+    }
+
+    // Check if we can borrow from right sibling
+    auto rightSibling =
+        (idx < parent->children.size() - 1)
+            ? std::dynamic_pointer_cast<InternalNode>(parent->children[idx + 1])
+            : nullptr;
+    if (rightSibling &&
+        rightSibling->keys.size() > std::ceil(internal->max_size / 2.0)) {
+      borrowFromRight(internal, rightSibling, parent, idx);
+      return;
+    }
+
+    // If no borrowing possible, merge with a sibling
+    if (leftSibling) {
+      mergeInternalNodes(leftSibling, internal, parent, idx - 1);
+    } else if (rightSibling) {
+      mergeInternalNodes(internal, rightSibling, parent, idx);
+    }
+  }
+
+  void mergeInternalNodes(std::shared_ptr<InternalNode> left,
+                          std::shared_ptr<InternalNode> right,
+                          std::shared_ptr<InternalNode> parent, int idx) {
+    // Merge the right sibling into the left node
+    left->keys.push_back(parent->keys[idx]);
+    left->keys.insert(left->keys.end(), right->keys.begin(), right->keys.end());
+    left->children.insert(left->children.end(), right->children.begin(),
+                          right->children.end());
+
+    // Remove the merged key and child pointer from the parent
+    parent->keys.erase(parent->keys.begin() + idx);
+    parent->children.erase(parent->children.begin() + idx + 1);
+
+    // If the parent is now underflowed, handle it recursively
+    if (parent->isUnderFlow()) {
+      handleInternalUnderFlow(parent);
+    }
   }
 
 public:
@@ -160,7 +316,8 @@ public:
       return 0;
     }
     leaf->keys.insert(it, key);
-    leaf->values.insert(leaf->values.begin() + index, value);
+    leaf->values.insert(leaf->values.begin() + index,
+                        std::make_shared<char>(value));
 
     if (leaf->isOverflow()) {
       splitLeaf(leaf);
@@ -169,7 +326,7 @@ public:
     return 0;
   }
 
-  char *search(int key) {
+  std::shared_ptr<char> search(int key) {
     std::shared_ptr<LeafNode> leaf = findLeaf(key);
     auto it = std::lower_bound(leaf->keys.begin(), leaf->keys.end(), key);
     int index = std::distance(leaf->keys.begin(), it);
@@ -179,8 +336,9 @@ public:
     return nullptr;
   }
 
-  std::vector<char *> rangedSearch(int lowerKey, int higherKey) {
-    std::vector<char *> result;
+  std::vector<std::shared_ptr<char>> rangedSearch(int lowerKey, int higherKey) {
+
+    std::vector<std::shared_ptr<char>> result;
     std::shared_ptr<LeafNode> leaf = findLeaf(lowerKey);
     auto it = std::lower_bound(leaf->keys.begin(), leaf->keys.end(), lowerKey);
     int index = std::distance(leaf->keys.begin(), it);
@@ -200,6 +358,25 @@ public:
 
     return result;
   };
+
+  void remove(int key) {
+    auto leaf = findLeaf(key);
+    if (!leaf) {
+      return;
+    }
+    auto it = std::lower_bound(leaf->keys.begin(), leaf->keys.end(), key);
+    if (it == leaf->keys.end() || *it != key) {
+      return;
+    }
+
+    int index = std::distance(leaf->keys.begin(), it);
+    leaf->keys.erase(it);
+    leaf->values.erase(leaf->values.begin() + index);
+
+    if (leaf->isUnderFlow()) {
+      handleLeafUnderFlow(leaf);
+    }
+  }
 };
 
 int main() {}
