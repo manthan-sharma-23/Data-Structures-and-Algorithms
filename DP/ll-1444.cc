@@ -53,6 +53,31 @@ public:
     return memo[row][col][k] = ans;
   }
 
+  int bottomUP(vector<string> &pizza, int k)
+  {
+    int m = pizza.size(), n = pizza[0].length();
+    vector<vector<int>> apples(m + 1, vector<int>(n + 1, 0));
+
+    for (int i = m - 1; i >= 0; i--)
+    {
+      for (int j = n - 1; j >= 0; j--)
+      {
+        apples[i][j] = (pizza[i][j] == 'A') + apples[i + 1][j] + apples[i][j + 1] - apples[i + 1][j + 1];
+      }
+    }
+
+    vector<vector<vector<int>>> dp(k, vector<vector<int>>(m, vector<int>(n, 0)));
+
+    for (int i = 0; i < m; i++)
+    {
+      for (int j = 0; j < n; j++)
+      {
+        if (apples[i][j] > 0)
+          dp[0][i][j] = 1;
+      }
+    }
+  }
+
   int ways(vector<string> &pizza, int k)
   {
     int m = pizza.size();
