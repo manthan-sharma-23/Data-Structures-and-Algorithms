@@ -168,6 +168,38 @@ public:
 
     return 0;
   }
+
+  char *search(int key) {
+    std::shared_ptr<LeafNode> leaf = findLeaf(key);
+    auto it = std::lower_bound(leaf->keys.begin(), leaf->keys.end(), key);
+    int index = std::distance(leaf->keys.begin(), it);
+    if (leaf->keys[index] == key) {
+      return leaf->values[index];
+    }
+    return nullptr;
+  }
+
+  std::vector<char *> rangedSearch(int lowerKey, int higherKey) {
+    std::vector<char *> result;
+    std::shared_ptr<LeafNode> leaf = findLeaf(lowerKey);
+    auto it = std::lower_bound(leaf->keys.begin(), leaf->keys.end(), lowerKey);
+    int index = std::distance(leaf->keys.begin(), it);
+
+    while (leaf != nullptr) {
+      for (int i = index; i < leaf->keys.size(); i++) {
+        int key = leaf->keys[i];
+        if (key >= lowerKey && key <= higherKey) {
+          result.push_back(leaf->values[i]);
+        }
+
+        if (key > higherKey)
+          return result;
+      }
+      leaf = leaf->next;
+    }
+
+    return result;
+  };
 };
 
 int main() {}
