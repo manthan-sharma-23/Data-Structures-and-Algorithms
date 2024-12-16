@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// O(n)
 class Solution {
 public:
   bool isSubsequence(string s, string t) {
@@ -22,6 +23,7 @@ public:
   }
 };
 
+// O(n^2)
 class TopDown {
 public:
   bool isSubsequence(string s, string t) {
