@@ -1,4 +1,3 @@
-
 #include <string>
 #include <vector>
 
@@ -6,29 +5,42 @@ using namespace std;
 
 class Solution {
 public:
-  vector<vector<int>> memo;
-
-  int solve(string &s1, string &s2, int m, int n, int count) {
-    if (m == 0 || n == 0)
-      return count;
-
-    if (memo[m][n] != -1)
-      return memo[m][n];
-
-    if (s1[m - 1] == s2[n - 1]) {
-      count = solve(s1, s2, m - 1, n - 1, count + 1);
+  bool isPalindrome(int i, int j, string &s) {
+    while (i < j) {
+      if (s[i] != s[j])
+        return false;
+      i++;
+      j--;
     }
-
-    int count1 = solve(s1, s2, m, n - 1, 0);
-    int count2 = solve(s1, s2, m - 1, n, 0);
-
-    return memo[m][n] = max(count, max(count1, count2));
+    return true;
   }
 
-  int longestCommonSubstr(string &s1, string &s2) {
-    memo =
-        vector<vector<int>>(s1.length() + 1, vector<int>(s2.length() + 1, -1));
-    return solve(s1, s2, s1.length(), s2.length(), 0);
+  // Recursive function to find the minimum number of partitions to make
+  // palindromes.
+  int minPartitions(int i, int n, string &str) {
+    // Base case: If we've reached the end of the string.
+    if (i == n)
+      return 0;
+
+    int minCost = 1e9;
+    // Consider all possible substrings starting from the current index.
+    for (int j = i; j < n; j++) {
+      if (isPalindrome(i, j, str)) {
+        // If the substring is a palindrome, calculate the cost and minimize it.
+        int cost = 1 + minPartitions(j + 1, n, str);
+        minCost = min(minCost, cost);
+      }
+    }
+    return minCost;
+  }
+
+  // Main function to find the minimum number of partitions for palindrome
+  // partitioning.
+  int palindromePartitioning(string str) {
+    int n = str.size();
+    // Calling the recursive function and subtracting 1 as it counts partitions,
+    // not cuts.
+    return minPartitions(0, n, str) - 1;
   }
 };
 
