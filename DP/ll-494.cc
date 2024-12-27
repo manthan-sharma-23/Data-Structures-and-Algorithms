@@ -1,54 +1,53 @@
 #include <cstdlib>
+#include <cstring>
 #include <numeric>
-#include <string>
-#include <unordered_map>
 #include <vector>
 
 using namespace std;
 
 class Solution {
 public:
-  unordered_map<string, int> memo;
-
-  int solve(vector<int> nums, int target, int index) {
-    string key = to_string(index) + "_" + to_string(target);
-
-    if (memo.find(key) != memo.end())
-      return memo[key];
-    if (target == 0 && index == nums.size())
-      return 1;
+  const int static offset = 1002;
+  int memo[1002][1002 + offset];
+  int f(vector<int> &nums, int target, int index, int currSum) {
 
     if (index == nums.size())
-      return 0;
+      return target == currSum;
 
-    return memo[key] = solve(nums, target - nums[index], index + 1) +
-                       solve(nums, target + nums[index], index + 1);
+    if (memo[index][currSum + offset] != -1)
+      return memo[index][currSum + offset];
+
+    return memo[index][currSum + offset] =
+               f(nums, target, index + 1, currSum + nums[index]) +
+               f(nums, target, index + 1, currSum - nums[index]);
   }
-
   int findTargetSumWays(vector<int> &nums, int target) {
-
-    return solve(nums, target, 0);
+    memset(memo, -1, sizeof(memo));
+    return f(nums, target, 0, 0);
   }
 };
 
-class BottomUpSolution {
-
+class TopDown {
+public:
   int findTargetSumWays(vector<int> &nums, int target) {
     int n = nums.size();
 
     int sum = accumulate(nums.begin(), nums.end(), 0);
-    if ((sum + target) % 2 != 0 || sum < abs(target)) {
+
+    if ((target + sum) % 2)
       return 0;
-    }
 
-    int find = (sum + target) / 2;
+    int subset_sum = (target + sum) / 2;
 
-    vector<vector<int>> dp(n + 1, vector<int>(find + 1, 0));
+    int dp[n + 1][subset_sum + 1];
 
-    dp[0][0] = 1;
+    memset(dp, 0, sizeof(dp));
+
+    for (int i = 0; i <= n; i++)
+      dp[i][0] = 1;
 
     for (int i = 1; i <= n; i++) {
-      for (int j = 0; j <= find; j++) {
+      for (int j = 1; j <= subset_sum; j++) {
         if (nums[i - 1] <= j) {
           dp[i][j] = dp[i - 1][j] + dp[i - 1][j - nums[i - 1]];
         } else {
@@ -57,6 +56,6 @@ class BottomUpSolution {
       }
     }
 
-    return dp[n][find];
+    return dp[n][subset_sum];
   }
 };
