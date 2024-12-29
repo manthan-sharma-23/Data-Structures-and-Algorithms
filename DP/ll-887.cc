@@ -48,12 +48,29 @@ public:
 
     for (int egg = 2; egg <= k; egg++) {
       for (int N = 2; N <= n; N++) {
-        dp[egg][N] = INT_MAX;
+        int ans = 1e9;
+        int l = 1;
+        int r = N;
 
-        for (int floor = 2; floor <= N; floor++) {
-          int temp = 1 + max(dp[egg - 1][floor - 1], dp[egg][N - floor]);
-          dp[egg][N] = min(dp[egg][N], temp);
+        while (l <= r) {
+          int mid = (l + r) / 2;
+          int breaks = 1 + dp[egg - 1][mid - 1];
+          int not_break = 1 + dp[egg][N - mid];
+
+          ans = min(ans, max(breaks, not_break));
+
+          if (breaks == not_break)
+            break;
+
+          if (breaks > not_break) {
+            r = mid - 1;
+          }
+          if (not_break > breaks) {
+            l = mid + 1;
+          }
         }
+
+        dp[egg][N] = ans;
       }
     }
 
