@@ -25,14 +25,14 @@ public:
 
     left = index, right = index;
 
-    while (true) {
+    while (left > 0) {
       if (nums[left - 1] == target)
         left--;
       else
         break;
     }
 
-    while (true) {
+    while (right < n - 1) {
       if (nums[right + 1] == target)
         right++;
       else
