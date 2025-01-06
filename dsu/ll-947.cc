@@ -68,6 +68,52 @@ public:
         components++;
     }
 
-    return components;
+    return n - components;
+  }
+};
+
+class DFS_Solution {
+private:
+  void dfs(vector<vector<int>> &adj, vector<bool> &visited, int node) {
+    visited[node] = true;
+
+    for (auto &u : adj[node]) {
+      if (!visited[u]) {
+        dfs(adj, visited, u);
+      }
+    }
+  }
+
+public:
+  int removeStones(vector<vector<int>> &stones) {
+    int n = stones.size();
+    vector<bool> visited(n, false);
+
+    vector<vector<int>> adj(n);
+
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        if (i == j)
+          continue;
+
+        auto stone1 = stones[i];
+        auto stone2 = stones[j];
+
+        if (stone1[0] == stone2[0] || stone1[1] == stone2[1]) {
+          adj[i].push_back(j);
+          adj[j].push_back(i);
+        }
+      }
+    }
+
+    int components = 0;
+    for (int i = 0; i < n; i++) {
+      if (!visited[i]) {
+        dfs(adj, visited, i);
+        components++;
+      }
+    }
+
+    return n - components;
   }
 };
