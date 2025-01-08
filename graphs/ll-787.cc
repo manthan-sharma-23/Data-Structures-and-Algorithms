@@ -1,5 +1,7 @@
 #include <climits>
+#include <cstring>
 #include <queue>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -8,44 +10,46 @@ class Solution {
 public:
   int findCheapestPrice(int n, vector<vector<int>> &flights, int src, int dst,
                         int k) {
+    vector<int> distance(n, INT_MAX);
 
-    typedef pair<int, pair<int, int>> flight_info;
+    unordered_map<int, vector<pair<int, int>>> adj;
 
-    vector<vector<pair<int, int>>> adj(n);
-    vector<int> minimumPrice(n, INT_MAX);
-    queue<flight_info> q;
+    for (vector<int> &vec : flights) {
+      int u = vec[0];
+      int v = vec[1];
+      int cost = vec[2];
 
-    for (int i = 0; i < flights.size(); i++) {
-      adj[flights[i][0]].push_back({flights[i][1], flights[i][2]});
+      adj[u].push_back({v, cost});
     }
 
-    minimumPrice[src] = 0;
-    q.push({k, {src, 0}});
+    queue<pair<int, int>> que;
+    que.push({src, 0});
+    distance[src] = 0;
 
-    while (!q.empty()) {
-      flight_info node = q.front();
-      int stops_left = node.first;
-      int from = node.second.first;
-      int price = node.second.second;
+    int level = 0;
 
-      q.pop();
+    while (!que.empty() && level <= k) {
+      int N = que.size();
 
-      if (minimumPrice[from] == INT_MAX || stops_left < 0)
-        continue;
+      while (N--) {
+        int u = que.front().first;
+        int d = que.front().second;
+        que.pop();
 
-      for (auto it : adj[from]) {
-        int to = it.first;
-        int n_price = it.second;
+        for (pair<int, int> &P : adj[u]) {
 
-        int totalPrice = price + n_price;
+          int v = P.first;
+          int cost = P.second;
 
-        if (totalPrice < minimumPrice[to] && stops_left >= 0) {
-          minimumPrice[to] = totalPrice;
-          q.push({stops_left - 1, {to, totalPrice}});
+          if (distance[v] > d + cost) {
+            distance[v] = d + cost;
+            que.push({v, d + cost});
+          }
         }
       }
+      level++;
     }
 
-    return minimumPrice[dst] == INT_MAX ? -1 : minimumPrice[dst];
+    return distance[dst] == INT_MAX ? -1 : distance[dst];
   }
 };
