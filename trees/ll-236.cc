@@ -16,22 +16,21 @@ struct TreeNode {
 class Solution {
 public:
   TreeNode *lowestCommonAncestor(TreeNode *root, TreeNode *p, TreeNode *q) {
-    if (root == nullptr)
+    if (!root)
       return nullptr;
 
     if (root == p || root == q)
       return root;
 
-    TreeNode *leftN = lowestCommonAncestor(root->left, p, q);
-    TreeNode *rightN = lowestCommonAncestor(root->right, p, q);
+    auto left_n = lowestCommonAncestor(root->left, p, q);
+    auto right_n = lowestCommonAncestor(root->right, p, q);
 
-    if (leftN != nullptr && rightN != nullptr) {
+    if (left_n && right_n)
       return root;
-    }
 
-    if (leftN != nullptr)
-      return leftN;
+    if (left_n)
+      return left_n;
 
-    return rightN;
+    return right_n;
   }
 };
