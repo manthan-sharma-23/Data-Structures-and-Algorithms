@@ -5,95 +5,108 @@
 
 using namespace std;
 
-#include <climits>
-#include <iostream>
-#include <queue>
-#include <vector>
-
-using namespace std;
-
 class Solution {
+public:
   vector<vector<int>> adj;
-  const int large = 5 * 1e4;
-  typedef long long ll;
+  vector<int> has_coin;
 
-  int dfs(int u, int parent, int dist, vector<int> &coins) {
-    int max_distance = coins[u] ? dist : -1;
-    for (auto node : adj[u]) {
-      if (node != parent) {
-        int d = dfs(node, u, dist + 1, coins);
-        if (d != -1) {
-          max_distance = max(max_distance, d);
-        }
-      }
-    }
-    return max_distance;
+  vector<int> subTreeTime;
+  vector<int> rootTime;
+
+  vector<vector<int>> subTreeCoins;
+  vector<vector<int>> rootCoins;
+
+  void mergeCoins(vector<int> &src, vector<int> &child) {
+    src[1] += child[0];
+    src[2] += child[1];
+    src[3] += child[2] + child[3];
   }
 
-public:
-  int collectTheCoins(vector<int> &coins, vector<vector<int>> &edges) {
-    int n = coins.size();
-    adj.resize(n);
-    vector<vector<ll>> grid(n, vector<ll>(n, large));
-
-    for (auto edge : edges) {
-      int u = edge[0], v = edge[1];
-      adj[u].push_back(v);
-      adj[v].push_back(u);
-      grid[u][v] = 1;
-      grid[v][u] = 1;
+  void mergeTime(int &srcTime, int &childTime, vector<int> &child) {
+    if (child[2] + child[3] > 0) {
+      srcTime += childTime + 2;
     }
+  }
 
-    for (int i = 0; i < n; i++) {
-      grid[i][i] = 0;
+  void removeCoins(vector<int> &src, vector<int> &child) {
+    src[1] -= child[0];
+    src[2] -= child[1];
+    src[3] -= (child[2] + child[3]);
+  }
+
+  void removeTime(int &srcTime, int &childTime, vector<int> &child) {
+    if (child[2] + child[3] > 0) {
+      srcTime -= (childTime + 2);
     }
+  }
 
-    for (int via = 0; via < n; via++) {
-      for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-          grid[i][j] = min(grid[i][j], grid[i][via] + grid[via][j]);
-        }
-      }
-    }
-    int minimax_distance = INT_MAX;
-    int optimal_node = -1;
-
-    for (int i = 0; i < n; i++) {
-      ll max_distance_to_coin = 0;
-      for (int j = 0; j < n; j++) {
-        if (coins[j]) {
-          max_distance_to_coin = max(max_distance_to_coin, grid[i][j]);
-        }
-      }
-      if (max_distance_to_coin < minimax_distance) {
-        minimax_distance = max_distance_to_coin;
-        optimal_node = i;
-      }
-    }
-
-    int parent = optimal_node;
-
-    int steps = 0;
-
-    for (auto node : adj[parent]) {
-      int dist = dfs(node, parent, 1, coins);
-      if (dist == -1)
+  void dfsIn(int root, int parent) {
+    for (auto child : adj[root]) {
+      if (child == parent)
         continue;
 
-      dist = dist > 2 ? dist - 2 : 0;
-      steps += (dist * 2);
+      dfsIn(child, root);
+
+      mergeCoins(subTreeCoins[root], subTreeCoins[child]);
+      mergeTime(subTreeTime[root], subTreeTime[child], subTreeCoins[child]);
     }
 
-    return steps;
+    if (has_coin[root]) {
+      subTreeCoins[root][0] = 1;
+    }
+  }
+
+  void dfsOut(int root, int parent) {
+    for (auto child : adj[root]) {
+      if (child == parent)
+        continue;
+
+      vector<int> root_coins = rootCoins[root];
+      removeCoins(root_coins, subTreeCoins[child]);
+
+      int root_time = rootTime[root];
+      removeTime(root_time, subTreeTime[child], subTreeCoins[child]);
+
+      rootCoins[child] = subTreeCoins[child];
+      mergeCoins(rootCoins[child], root_coins);
+
+      rootTime[child] = subTreeTime[child];
+      mergeTime(rootTime[child], root_time, root_coins);
+
+      dfsOut(child, root);
+    }
+  }
+
+  int collectTheCoins(vector<int> &coins, vector<vector<int>> &edges) {
+    int n = coins.size();
+
+    if (n <= 1)
+      return 0;
+
+    has_coin = coins;
+    subTreeCoins.resize(n, vector<int>(4, 0));
+    rootCoins.resize(n, vector<int>(4, 0));
+
+    rootTime.resize(n, 0);
+    subTreeTime.resize(n, 0);
+
+    adj.resize(n);
+    for (const auto &edge : edges) {
+      adj[edge[0]].push_back(edge[1]);
+      adj[edge[1]].push_back(edge[0]);
+    }
+
+    dfsIn(0, -1);
+    rootTime[0] = subTreeTime[0];
+    rootCoins[0] = subTreeCoins[0];
+
+    dfsOut(0, -1);
+
+    int minTime = INT_MAX;
+
+    for (auto time : rootTime)
+      minTime = min(minTime, time);
+
+    return minTime;
   }
 };
-
-int main() {
-  vector<vector<int>> edges = {{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}};
-  vector<int> coins = {1, 0, 0, 0, 0, 1};
-
-  Solution s;
-  s.collectTheCoins(coins, edges);
-
-  return 0;
-}
