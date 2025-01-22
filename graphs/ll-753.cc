@@ -1,41 +1,29 @@
-#include <queue>
-#include <vector>
+#include <functional>
+#include <string>
+#include <unordered_set>
 
 using namespace std;
 
 class Solution {
 public:
-  typedef pair<int, int> coordinates;
-  vector<vector<int>> floodFill(vector<vector<int>> &image, int sr, int sc,
-                                int color) {
-    int rows = image.size(), columns = image[0].size();
+  string crackSafe(int n, int k) {
+    string result = string(n - 1, '0');
+    unordered_set<string> visited;
+    visited.insert(result);
 
-    int base = image[sr][sc];
-
-    if (base == color)
-      return image;
-
-    queue<coordinates> q;
-
-    vector<coordinates> directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-
-    q.push({sr, sc});
-
-    while (!q.empty()) {
-      auto [x, y] = q.front();
-      q.pop();
-      image[x][y] = color;
-
-      for (auto &[dx, dy] : directions) {
-        int nx = x + dx;
-        int ny = y + dy;
-        if (nx >= 0 && nx < rows && ny >= 0 && ny < columns &&
-            (image[nx][ny] == base)) {
-          q.push({nx, ny});
+    function<void(string)> dfs = [&](string node) {
+      for (char digit = '0'; digit < '0' + k; ++digit) {
+        string nextNode = node.substr(1) + digit;
+        if (visited.count(nextNode) == 0) {
+          visited.insert(nextNode);
+          dfs(nextNode);
+          result += digit;
         }
       }
-    }
+    };
 
-    return image;
+    dfs(result);
+
+    return result;
   }
 };
