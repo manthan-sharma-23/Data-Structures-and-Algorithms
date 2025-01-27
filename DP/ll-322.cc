@@ -96,11 +96,10 @@ public:
     int n = coins.size();
     vector<int> min_coins(amount + 1, amount + 1);
     min_coins[0] = 0;
-    for (int i = 1; i <= amount; i++) {
-      for (int c = 0; c < n; c++) {
-        if (i - c >= 0) {
-          min_coins[i] = min(min_coins[i], 1 + min_coins[i - coins[c]]);
-        }
+
+    for (auto coin : coins) {
+      for (int i = 1; i <= amount && i >= coin; i++) {
+        min_coins[i] = min(min_coins[i], 1 + min_coins[i - coin]);
       }
     }
 
