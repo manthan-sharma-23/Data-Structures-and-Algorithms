@@ -1,3 +1,4 @@
+#include <climits>
 #include <cstring>
 #include <vector>
 
@@ -5,30 +6,34 @@ using namespace std;
 
 class Solution {
 public:
+  vector<int> val;
   int memo[102][102];
 
-  int solve(vector<int> arr, int i, int j, int n) {
-
-    if (memo[i][j] != -1)
-      return memo[i][j];
+  int f(int i, int j) {
     if (i == j)
       return memo[i][j] = 0;
 
-    int mini = 1e9;
-
-    for (int k = i; k < j; k++) {
-      int cost = arr[i - 1] * arr[k] * arr[j];
-      int min_cost = cost + solve(arr, i, k, n) + solve(arr, k + 1, j, n);
-      mini = min(min_cost, mini);
+    if (memo[i][j] != -1) {
+      return memo[i][j];
     }
-    return memo[i][j] = mini;
+
+    int minCost = INT_MAX;
+    for (int k = i; k < j; k++) {
+      int cost = val[i - 1] * val[k] * val[j];
+      minCost = min(minCost, cost + f(i, k) + f(k + 1, j));
+    }
+
+    return memo[i][j] = minCost;
   }
 
   int matrixMultiplication(vector<int> &arr) {
     memset(memo, -1, sizeof(memo));
-    return solve(arr, 1, arr.size() - 1, arr.size());
+    val = arr;
+
+    return f(0, arr.size() - 1);
   }
 };
+
 class TopDown {
 public:
   int matrixMultiplication(vector<int> &arr) {
