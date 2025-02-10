@@ -11,7 +11,7 @@ public:
 
     for (int i = 0; i < arr.size(); i++) {
       if (first_occur.find(arr[i]) == first_occur.end()) {
-        first_occur[arr[i]] = i; // Store first occurrence
+        first_occur[arr[i]] = i;
       }
       maxD = max(maxD, i - first_occur[arr[i]]);
     }

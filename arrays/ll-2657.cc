@@ -7,17 +7,27 @@ using namespace std;
 class Solution {
 public:
   vector<int> findThePrefixCommonArray(vector<int> &A, vector<int> &B) {
-    int n = A.size();
-    int freq[n][n + 1];
-    memset(freq, 0, sizeof(freq));
+    unordered_map<int, int> mp;
 
-    int res[n];
+    vector<int> res;
+    int count = 0;
+    for (int i = 0; i < A.size(); i++) {
+      if (A[i] == B[i])
+        count++;
+      else {
+        if (mp.find(A[i]) != mp.end()) {
+          count++;
+        }
 
-    for (int i = 0; i < n; i++) {
-      freq[i][A[i]]++;
-      freq[i][B[i]]++;
+        if (mp.find(B[i]) != mp.end())
+          count++;
+      }
 
-      
+      mp[A[i]]++, mp[B[i]]++;
+
+      res[i] = count;
     }
+
+    return res;
   }
 };

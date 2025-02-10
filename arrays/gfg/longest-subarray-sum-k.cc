@@ -6,25 +6,21 @@ using namespace std;
 class Solution {
 public:
   int longestSubarray(vector<int> &arr, int k) {
-    unordered_map<int, int> occurence;
-    int prefixSum = 0;
-    int len = 0;
-    for (int i = 0; i < arr.size(); i++) {
-      prefixSum += arr[i];
+    int left = 0, right = 0, maxLen = 0, sum = 0;
 
-      if (prefixSum == k) {
-        len = i + 1;
+    while (right < arr.size()) {
+      sum += arr[right++];
+
+      while (sum > k && left < right) {
+        sum -= arr[left];
+        left++;
       }
 
-      if (occurence.find(prefixSum - k) != occurence.end()) {
-        int j = occurence[prefixSum - k];
-        len = max(len, i - j + 1);
+      if (sum == k) {
+        maxLen = max(maxLen, right - left);
       }
-
-      if (occurence.find(prefixSum) == occurence.end())
-        occurence[prefixSum] = i;
     }
 
-    return len;
+    return maxLen;
   }
 };
