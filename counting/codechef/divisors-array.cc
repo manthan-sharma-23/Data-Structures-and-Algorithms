@@ -1,3 +1,5 @@
+//  link -> https://www.codechef.com/problems/DIVISORS2
+
 #include <iostream>
 #include <unordered_map>
 #include <vector>
