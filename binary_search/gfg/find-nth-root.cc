@@ -4,6 +4,7 @@ using namespace std;
 
 class Solution {
 public:
+    //  find m = a ^ n  ; solve for a ;
   int nthRoot(int n, int m) {
 
     int low = 1, high = m;
