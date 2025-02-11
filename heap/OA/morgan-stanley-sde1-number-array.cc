@@ -1,4 +1,4 @@
-//  link ->
+//  question link ->
 //  https://www.desiqna.in/12816/morgan-sde1-coding-questions-and-solutions-india-april-2023
 
 #include <iostream>
