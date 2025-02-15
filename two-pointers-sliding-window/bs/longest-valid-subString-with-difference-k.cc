@@ -9,7 +9,7 @@ using namespace std;
 int longestValidSubstringWithDistanceLesstThanK(string &s, int k) {
   int n = s.length();
 
-  //  allows to store tthe characters in sorted order along the frequencies to
+  //  allows to store the characters in sorted order along the frequencies to
   //  keep track of min/max
   multiset<int> st;
 
