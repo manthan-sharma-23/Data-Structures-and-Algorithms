@@ -19,7 +19,7 @@ int minCost(vector<int> &nums) {
 
   for (int i = 1; i < n; i++) {
     if (i > 1) {
-      dp[i][fw] = nums[i] + min(dp[i - 1][bw], dp[i - 1][fw]);
+      dp[i][fw] = nums[i] + min(dp[i - 2][bw], dp[i - 2][fw]);
     }
 
     dp[i][bw] = nums[i] + dp[i - 1][fw] + nums[i + 1];
