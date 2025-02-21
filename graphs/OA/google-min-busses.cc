@@ -4,12 +4,11 @@
 #include <algorithm>
 #include <climits>
 #include <iostream>
-#include <unordered_map>
 #include <vector>
 using namespace std;
 
-unordered_map<int, vector<int>> adj;
-unordered_map<int, int> nSums;
+vector<vector<int>> adj;
+vector<int> nSums;
 vector<vector<int>> wts;
 
 int minNode = 1;
@@ -57,6 +56,8 @@ void dfsOut(int node, int parent, vector<bool> &value) {
 int findMinimumBusses(vector<vector<int>> &edges, vector<bool> &hasPassengers) {
   int V = edges.size() + 1;
 
+  adj.resize(V + 1);
+  nSums.resize(V + 1, 0);
   wts.resize(V + 1, vector<int>(V + 1, 0));
 
   for (auto &edge : edges) {
