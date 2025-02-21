@@ -24,7 +24,7 @@ int dfsIn(int node, int parent, vector<bool> &value) {
       continue;
     int tChild = dfsIn(child, node, value);
 
-    wts[child][node] = tChild, wts[child][node] = tChild;
+    wts[child][node] = tChild, wts[node][child] = tChild;
     nSum += tChild;
   }
 
