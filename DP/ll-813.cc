@@ -9,6 +9,7 @@ public:
   double largestSumOfAverages(vector<int> &nums, int k) {
     int n = nums.size();
 
+
     vector<double> prefix(n + 1, 0);
     for (int i = 1; i <= n; i++) {
       prefix[i] = prefix[i - 1] + nums[i - 1];
@@ -22,7 +23,7 @@ public:
 
     for (int parts = 2; parts <= k; parts++) {
       for (int i = parts; i <= n; i++) {
-
+        // cuts
         for (int c = i - 1; c >= parts - 1; c--) {
           dp[i][parts] =
               max(dp[i][parts],
