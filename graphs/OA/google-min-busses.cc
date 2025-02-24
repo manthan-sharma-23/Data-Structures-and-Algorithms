@@ -40,7 +40,7 @@ void dfsOut(int node, int parent, vector<bool> &value) {
   nSums[node] += newParentBusses;
   int newBusses = (nSums[node] == 0 ? value[node] : nSums[node]);
 
-  if (newBusses < minBusses) {
+  if (newBusses <= minBusses) {
     minBusses = newBusses;
     minNode = node;
   }
