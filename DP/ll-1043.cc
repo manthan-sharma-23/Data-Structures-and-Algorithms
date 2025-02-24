@@ -13,6 +13,11 @@ public:
 
     dp[0] = 0;
 
+    /*
+    If we make cut on cth index we need to find the k-1 maximum partitions
+    for the rest of the array on left
+    */
+
     for (int i = 1; i <= n; i++) {
       int maxi = arr[i - 1];
       for (int cut = i - 1; cut >= 0; cut--) {
