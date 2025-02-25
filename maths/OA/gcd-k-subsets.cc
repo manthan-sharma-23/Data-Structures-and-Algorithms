@@ -1,7 +1,5 @@
-
-#include <algorithm>
 #include <cmath>
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 using namespace std;
@@ -9,7 +7,7 @@ using namespace std;
 vector<int> largestGCDOfKSubsets(vector<int> &arr, vector<int> &queries) {
   int n = arr.size();
 
-  unordered_map<int, int> freq;
+  map<int, int> freq;
 
   for (auto num : arr) {
     for (int i = 1; i <= (int)sqrt(num); i++) {
@@ -21,28 +19,19 @@ vector<int> largestGCDOfKSubsets(vector<int> &arr, vector<int> &queries) {
     }
   }
 
-  vector<pair<int, int>> st;
+  vector<int> res(n + 1);
 
-  for (auto it : freq) {
-    st.push_back({it.second, it.first});
-  }
+  auto it = freq.rbegin();
+  int i = 1;
+  while (it != freq.rend() && i <= n) {
 
-  sort(st.begin(), st.end(), [](pair<int, int> &a, pair<int, int> &b) {
-    if (a.first == b.first)
-      return a.second > b.second;
-    return a.first > b.first;
-  });
-
-  vector<int> res;
-
-  for (auto query : queries) {
-
-    for (auto it : st) {
-      if (it.first >= query) {
-        res.push_back(it.second);
-        break;
-      }
+    if (it->second >= i) {
+      res[i] = it->first;
+      i++;
     }
+
+    else
+      it++;
   }
 
   return res;
