@@ -4,6 +4,9 @@
 
 using namespace std;
 
+// link ->
+// https://www.desiqna.in/15165/google-oa-software-engineering-intern-july-21-2023-kumar-k
+
 int minCost(vector<int> &A, vector<int> &B, int N) {
   const int a = 0, b = 1;
   vector<vector<int>> dp(N, vector<int>(2, INT_MAX));

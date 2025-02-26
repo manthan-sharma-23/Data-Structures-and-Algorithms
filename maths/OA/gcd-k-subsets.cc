@@ -4,7 +4,7 @@
 
 using namespace std;
 
-vector<int> largestGCDOfKSubsets(vector<int> &arr, vector<int> &queries) {
+vector<int> largestGCDOfKSubsets(vector<int> &arr) {
   int n = arr.size();
 
   map<int, int> freq;
