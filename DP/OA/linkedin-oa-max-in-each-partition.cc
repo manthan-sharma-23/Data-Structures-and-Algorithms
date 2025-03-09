@@ -24,7 +24,7 @@ int minSum(vector<int> &nums, int k) {
     for (int i = part; i <= n; i++) {
       int maxi = nums[i - 1];
       for (int cut = i - 1; cut >= part - 1; cut--) {
-        dp[i][part] = min(dp[i][part], maxi + dp[cut][part - 1]);
+        dp[i][part] = max(dp[i][part], maxi + dp[cut][part - 1]);
         maxi = max(maxi, nums[cut - 1]);
       }
     }

@@ -1,4 +1,7 @@
 /*
+  link ->
+  https://docs.google.com/document/d/150GXkj4nUrS0a148AFaQQA17jUhAszEdSn-wCag7Z-I/edit?tab=t.0
+
  Given a string ‘s’; please find the longest subsequence which is of the form
  “a…..e…..i…..o…..u….” and output the length.
 

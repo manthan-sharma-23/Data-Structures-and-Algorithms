@@ -1,31 +1,42 @@
-#include <bits/stdc++.h>
+#include <climits>
+#include <iostream>
+#include <numeric>
+#include <vector>
 
 using namespace std;
 
 typedef long long ll;
-long long maximumStrength(vector<int> &nums, int m, int k) {
-  int n = nums.size();
+class Solution {
+public:
+  ll maxSum(vector<int> &nums, int k, int m) {
+    int n = nums.size();
+    vector<ll> prefix(n + 1, 0);
 
-  vector<int> pref(n + 1, 0);
-  for (int i = 1; i <= n; i++) {
-    pref[i] = pref[i - 1] + nums[i - 1];
-  }
+    partial_sum(nums.begin(), nums.end(), prefix.begin() + 1);
 
-  vector<vector<ll>> dp(n + 1, vector<ll>(k + 1, 0));
+    vector<vector<ll>> dp(k + 1, vector<ll>(n + 1, -1e9));
 
-  for (int i = 1; i <= n; i++) {
-    for (int part = 1; part <= k; part++) {
-      if (i >= m) {
-        dp[i][part] =
-            max((pref[i] - pref[i - m]) + dp[i - m][part - 1], dp[i - 1][part]);
-      } else {
-        dp[i][part] = dp[i - 1][part];
+    for (int j = 0; j <= n; j++) {
+      dp[0][j] = 0;
+    }
+
+    for (int i = 0; i < k; i++) {
+      ll best = -1e9;
+      for (int j = 0; j <= n; j++) {
+        if (j > 0)
+          dp[i + 1][j] = max(dp[i + 1][j], dp[i + 1][j - 1]);
+
+        if (j - m >= 0)
+          best = max(best, dp[i][j - m] - prefix[j - m]);
+
+        if (best != -1e9)
+          dp[i + 1][j] = max(dp[i + 1][j], prefix[j] + best);
       }
     }
-  }
 
-  return dp[n][k];
-}
+    return dp[k][n];
+  }
+};
 
 int main() {
   int n, m, k;
@@ -37,5 +48,7 @@ int main() {
   for (int i = 0; i < n; i++)
     cin >> nums[i];
 
-  cout << maximumStrength(nums, m, k) << endl;
+  Solution s;
+
+  cout << s.maxSum(nums, k, m) << endl;
 }
