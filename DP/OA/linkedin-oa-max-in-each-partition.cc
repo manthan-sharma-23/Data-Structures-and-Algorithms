@@ -28,7 +28,7 @@ int minSum(vector<int> &nums, int k) {
         maxi = max(maxi, nums[cut - 1]);
       }
     }
-  }
+  } 
 
   return dp[n][k];
 }

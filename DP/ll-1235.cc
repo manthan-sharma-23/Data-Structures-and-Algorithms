@@ -8,37 +8,42 @@ class Solution {
 public:
   int jobScheduling(vector<int> &startTime, vector<int> &endTime,
                     vector<int> &profit) {
-    int n = profit.size();
-    vector<vector<int>> jobs(n);
+
+    int n = startTime.size();
+
+    vector<vector<int>> Jobs(n);
 
     for (int i = 0; i < n; i++) {
-      jobs[i] = {startTime[i], endTime[i], profit[i]};
+      Jobs[i] = {
+          startTime[i],
+          endTime[i],
+          profit[i],
+      };
     }
 
     sort(
-        jobs.begin(), jobs.end(),
-        [](const vector<int> &a, const vector<int> &b) { return a[1] < b[1]; });
+        Jobs.begin(), Jobs.end(),
+        [](const vector<int> &a, const vector<int> &b) { return a[0] < b[0]; });
 
     vector<int> dp(n + 1, 0);
 
-    for (int i = 1; i <= n; i++) {
-      auto &job = jobs[i - 1];
-      int currProfit = job[2];
+    int maxP = 0;
 
-      int l = 0, r = i - 1, nextJobIndex = 0;
-      while (l < r) {
-        int mid = (l + r + 1) / 2;
-        if (jobs[mid][1] <= job[0]) {
-          nextJobIndex = mid + 1;
-          l = mid;
-        } else {
-          r = mid - 1;
+    for (int i = 1; i <= n; i++) {
+      int P = Jobs[i - 1][2];
+      int start = Jobs[i - 1][0];
+
+      dp[i] = P;
+
+      for (int cut = i - 2; cut > 0; cut--) {
+        if (Jobs[cut - 1][1] <= start) {
+          dp[i] = max(dp[i], P + dp[cut]);
         }
       }
 
-      currProfit += dp[nextJobIndex];
-      dp[i] = max(dp[i - 1], currProfit);
+      maxP = max(maxP, dp[i]);
     }
-    return dp[n];
+
+    return maxP;
   }
 };

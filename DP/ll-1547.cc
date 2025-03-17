@@ -1,32 +1,37 @@
 #include <algorithm>
 #include <climits>
-#include <cstring>
 #include <vector>
 using namespace std;
 
 class Solution {
 public:
-  int N;
+  typedef long long ll;
+  int minCost(int L, vector<int> &cuts) {
+    cuts.push_back(0);
+    cuts.push_back(L);
+    const int LARGE = 1e9;
 
-  int f(vector<int> &cuts, int i, int j) {
-    if (i >= j)
-      return 0;
-    int minCost = INT_MAX;
+    sort(cuts.begin(), cuts.end());
+    int n = cuts.size();
 
-    for (int k = i; k < j; k++) {
-      int cost = (cuts[j] - cuts[i - 1]) + f(cuts, i, k) + f(cuts, k + 1, j);
-      minCost = min(minCost, cost);
+    vector<vector<ll>> dp(n, vector<ll>(n, LARGE));
+
+    for (int i = 0; i < n; i++) {
+      dp[i][i] = 0;
     }
 
-    return minCost;
-  }
+    for (int len = 2; len <= n; len++) {
+      for (int i = 0; i + len - 1 < n; i++) {
+        int j = i + len - 1;
+        for (int k = i + 1; k < j; k++) {
+          dp[i][j] = min(dp[i][j], cuts[j] - cuts[i] + dp[i][k] + dp[k][j]);
+        }
 
-  int minCost(int n, vector<int> &cuts) {
-    cuts.insert(cuts.begin(), 0);
-    cuts.push_back(n);
+        if (dp[i][j] == LARGE)
+          dp[i][j] = 0;
+      }
+    }
 
-    int N = cuts.size();
-
-    return f(cuts, 1, N - 1);
+    return dp[0][n - 1];
   }
 };
