@@ -23,27 +23,29 @@ public:
 
     sort(
         Jobs.begin(), Jobs.end(),
-        [](const vector<int> &a, const vector<int> &b) { return a[0] < b[0]; });
+        [](const vector<int> &a, const vector<int> &b) { return a[1] < b[1]; });
 
     vector<int> dp(n + 1, 0);
 
-    int maxP = 0;
-
     for (int i = 1; i <= n; i++) {
-      int P = Jobs[i - 1][2];
-      int start = Jobs[i - 1][0];
+      auto job = Jobs[i - 1];
 
-      dp[i] = P;
+      int left = 0, right = i - 2, res = -1;
 
-      for (int cut = i - 2; cut > 0; cut--) {
-        if (Jobs[cut - 1][1] <= start) {
-          dp[i] = max(dp[i], P + dp[cut]);
+      while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (Jobs[mid][1] < job[0]) {
+          res = mid;
+          left = mid + 1;
+        } else {
+          right = mid - 1;
         }
       }
 
-      maxP = max(maxP, dp[i]);
+      dp[i] = max(dp[i - 1], job[2] + (res == -1 ? 0 : dp[res + 1]));
     }
 
-    return maxP;
+    return dp[n];
   }
 };

@@ -6,43 +6,32 @@ using namespace std;
 
 class Solution {
 public:
-  unordered_map<string, bool> mp;
-  bool dfs(string s1, string s2) {
-    if (s1 == s2) {
+  int n;
+  string r;
+
+  bool f(int mask, string s) {
+
+    if (s.compare(r) == 0)
       return true;
-    }
-
-    if (s1.length() != s2.length()) {
-      return false;
-    }
-
-    string key = s1 + "_" + s2;
-    if (mp.find(key) != mp.end())
-      return mp[key];
-
-    bool result = false;
-    int n = s1.length();
 
     for (int i = 0; i < n; i++) {
-      bool swapped = dfs(s1.substr(0, i), s2.substr(n - i, i)) &&
-                     dfs(s1.substr(i, n - i), s2.substr(0, n - i));
-      if (swapped) {
-        result = true;
-        break;
-      }
-
-      bool not_swapped = dfs(s1.substr(0, i), s2.substr(0, i)) &&
-                         dfs(s1.substr(i, n - i), s2.substr(i, n - i));
-      if (not_swapped) {
-        result = true;
-        break;
+      if (!(mask & (1 << i))) {
+        if (f(mask | (1 << i), s) ||
+            f(mask | (1 << (n - i + 1)), s.substr(i + 1) + s.substr(0, i + 1)))
+          return true;
       }
     }
-    return mp[key] = result;
+
+    return false;
   }
 
   bool isScramble(string s1, string s2) {
-    mp.clear();
-    return dfs(s1, s2);
+    r = s2;
+    n = s1.length();
+
+    if (s1.length() != s2.length())
+      return false;
+
+    return f(0, s1);
   }
 };

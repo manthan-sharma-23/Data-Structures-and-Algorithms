@@ -1,32 +1,29 @@
 #include <algorithm>
-#include <climits>
-#include <cmath>
-#include <cstdint>
-#include <unordered_map>
 #include <vector>
 
 using namespace std;
 
 class Solution {
 public:
+  typedef long long ll;
+  const int MOD = 1e9 + 7;
   int numberOfArithmeticSlices(vector<int> &nums) {
-    typedef long long ll;
     int n = nums.size();
 
-    vector<unordered_map<ll, ll>> dp(n);
+    sort(nums.begin(), nums.end());
 
-    ll result = 0;
+    int maxDiff = nums[n - 1] - nums[0];
 
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < i; j++) {
-        ll diff = (ll)(nums[i] - nums[j]);
+    vector<vector<ll>> dp(n, vector<ll>(maxDiff + 1, 0));
 
-        ll count = dp[j].count(diff) ? dp[j][diff] : 0;
-
-        dp[i][diff] += dp[j][diff] + 1;
-        result += dp[j][diff];
+    ll ans = 0;
+    for (int i = 1; i < n; i++) {
+      for (int cut = i - 1; cut >= 0; cut--) {
+        int diff = nums[i] - nums[cut];
+        dp[nums[i]][diff] += (dp[cut][diff] + 1);
       }
     }
-    return result;
+
+    return ans;
   }
 };
